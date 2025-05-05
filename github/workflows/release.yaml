@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:  write-all
+
+jobs:
+  release:
+    runs-on:  windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth:  1
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache:  npm
+      - name:  install dependencies
+        run:  npm ci
+      - name:  release
+        run:  npm semantic-release
+        env: 
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NPM_TOKEN:  ${{secrets.NPM_TOKEN}}
